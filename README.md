@@ -47,6 +47,7 @@ The following SPARQL queries implement several Competency Questions for the Evdo
 
 - Return all modules that the book is used, along with the Department and the University
 
+
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (?mt as ?Μάθημα) 
 	where { 
@@ -66,7 +67,9 @@ The following SPARQL queries implement several Competency Questions for the Evdo
 		?u evdx:name ?un .
 	}
 
+
 - Return how many modules and all module names (in a string), that the book is used, along with the Department and the University, group by Department
+
 
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
@@ -87,7 +90,9 @@ The following SPARQL queries implement several Competency Questions for the Evdo
 		?u evdx:name ?un .
 	} group by ?un ?dn
 
+
 - Return in how many modules, of how many Departments and how many Universities the book is used
+
 
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
@@ -105,7 +110,9 @@ The following SPARQL queries implement several Competency Questions for the Evdo
 		?u evdx:hasDepartment ?d .
 	}
 
+
 - Return in how many modules, of how many Departments and how many Universities the book is used, per year, for a range of years
+
 
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select ?year (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
@@ -124,6 +131,7 @@ The following SPARQL queries implement several Competency Questions for the Evdo
 		?u evdx:hasDepartment ?d .
 	} group by ?year
 	order by ?year
+
 
 The same query, for multiple books:
 
@@ -147,6 +155,7 @@ The same query, for multiple books:
 order by ?year
 
 - Which Departments (including details about University/Modules) have been added in the second academic year compared to the first
+
 
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
@@ -175,9 +184,11 @@ order by ?year
 		}
 	} group by ?un ?dn
 
+
 In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Departments (including details about University/Modules) have been deleted from the first academic year compared to the second one.
 
 - Which Universities (including details about Departments/Modules) have been added in the second academic year compared to the first
+
 
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
@@ -208,9 +219,11 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		}
 	} group by ?un ?dn
 
+
 In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Universities (including details about Departments/Modules) have been deleted from the first academic year compared to the second one.
 
 - Which Modules (including details about Departments/Universities) have been added in the second academic year compared to the first
+
 
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
@@ -240,9 +253,11 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		}
 	} group by ?un ?dn
 
+
 In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Modules (including details about University/Department) have been deleted from the first academic year compared to the second one.
 
 - Return comparison details and statistics for multiple books for a specific academic year.
+
 
 	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
 	select (group_concat(DISTINCT ?code;separator=", ") as ?Βιβλίο) (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
