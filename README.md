@@ -48,89 +48,89 @@ The following SPARQL queries implement several Competency Questions for the Evdo
 - Return all modules that the book is used, along with the Department and the University
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (?mt as ?Μάθημα) 
-	where { 
-		?s a evdx:Book .
-		?s evdx:hasCode "94700120" .
-		?m a evdx:Module .
-		?m evdx:title ?mt .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year 2022 .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?d evdx:name ?dn .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-		?u evdx:name ?un .
-	}
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (?mt as ?Μάθημα) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:hasCode "94700120" .
+			?m a evdx:Module .
+			?m evdx:title ?mt .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?d evdx:name ?dn .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+			?u evdx:name ?un .
+		}
 
 
 - Return how many modules and all module names (in a string), that the book is used, along with the Department and the University, group by Department
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
-	where { 
-		?s a evdx:Book .
-		?s evdx:hasCode "94700120" .
-		?m a evdx:Module .
-		?m evdx:title ?mt .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year 2022 .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?d evdx:name ?dn .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-		?u evdx:name ?un .
-	} group by ?un ?dn
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:hasCode "94700120" .
+			?m a evdx:Module .
+			?m evdx:title ?mt .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?d evdx:name ?dn .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+			?u evdx:name ?un .
+		} group by ?un ?dn
 
 
 - Return in how many modules, of how many Departments and how many Universities the book is used
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
-	where { 
-		?s a evdx:Book .
-		?s evdx:hasCode "94700120" .
-		?m a evdx:Module .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year 2022 .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-	}
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:hasCode "94700120" .
+			?m a evdx:Module .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+		}
 
 
 - Return in how many modules, of how many Departments and how many Universities the book is used, per year, for a range of years
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select ?year (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
-	where { 
-		?s a evdx:Book .
-		?s evdx:hasCode "94700120" .
-		?m a evdx:Module .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year ?year.
-		FILTER (?year>= 2019 && ?year < 2023) .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-	} group by ?year
-	order by ?year
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select ?year (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:hasCode "94700120" .
+			?m a evdx:Module .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year ?year.
+			FILTER (?year>= 2019 && ?year < 2023) .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+		} group by ?year
+		  order by ?year
 
 
 The same query, for multiple books:
