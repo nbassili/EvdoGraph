@@ -44,7 +44,7 @@ SPARQL queries
 ==============
 
 The following SPARQL queries implement several Competency Questions for the Evdoxus Ontology-Knowledge Graph.
-These competency questions have been derived from the various predicates of the EvdoStats project.
+These competency questions have been derived from the various predicates of the [EvdoStats](https://github.com/nbassili/EvdoStats) project.
 
 - Return all modules that the book is used, along with the Department and the University
 
