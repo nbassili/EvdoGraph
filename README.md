@@ -135,54 +135,55 @@ The following SPARQL queries implement several Competency Questions for the Evdo
 
 The same query, for multiple books:
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select ?year (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
-	where { 
-		?s a evdx:Book .
-		VALUES ?code { "94700120" "12867416" }
-		?s evdx:hasCode ?code .
-		?m a evdx:Module .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year ?year.
-		FILTER ((?year>=2019) && (?year<2023)) .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-} group by ?year
-order by ?year
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select ?year (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
+		where { 
+			?s a evdx:Book .
+			VALUES ?code { "94700120" "12867416" }
+			?s evdx:hasCode ?code .
+			?m a evdx:Module .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year ?year.
+			FILTER ((?year>=2019) && (?year<2023)) .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+		} group by ?year
+			order by ?year
+
 
 - Which Departments (including details about University/Modules) have been added in the second academic year compared to the first
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
-	where { 
-		?s a evdx:Book .
-		?s evdx:hasCode "94700120" .
-		?m a evdx:Module .
-		?m evdx:title ?mt .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year 2022 .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?d evdx:name ?dn .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-		?u evdx:name ?un .
-		FILTER NOT EXISTS {
-			?m1 a evdx:Module .
-			?m1 evdx:hasBook ?s .
-			?c1 a evdx:Course .
-			?c1 evdx:year 2021 .
-			?c1 evdx:hasModule ?m1 .
-			?d evdx:hasCourse ?c1 .
-		}
-	} group by ?un ?dn
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:hasCode "94700120" .
+			?m a evdx:Module .
+			?m evdx:title ?mt .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?d evdx:name ?dn .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+			?u evdx:name ?un .
+			FILTER NOT EXISTS {
+				?m1 a evdx:Module .
+				?m1 evdx:hasBook ?s .
+				?c1 a evdx:Course .
+				?c1 evdx:year 2021 .
+				?c1 evdx:hasModule ?m1 .
+				?d evdx:hasCourse ?c1 .
+			}
+		} group by ?un ?dn
 
 
 In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Departments (including details about University/Modules) have been deleted from the first academic year compared to the second one.
