@@ -152,7 +152,7 @@ The same query, for multiple books:
 			?u a evdx:University .
 			?u evdx:hasDepartment ?d .
 		} group by ?year
-			order by ?year
+		  order by ?year
 
 
 - Which Departments (including details about University/Modules) have been added in the second academic year compared to the first
