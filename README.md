@@ -259,21 +259,21 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 - Return comparison details and statistics for multiple books for a specific academic year.
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select (group_concat(DISTINCT ?code;separator=", ") as ?Βιβλίο) (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
-	where {
-		?s a evdx:Book .
-		VALUES (?book ?code) { (1 "94700120") (1 "12867416") (2 "102070469") (2 "13909")}
-		?s evdx:hasCode ?code .
-		?m a evdx:Module .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year 2022 .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-	} group by ?book
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select (group_concat(DISTINCT ?code;separator=", ") as ?Βιβλίο) (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
+		where {
+			?s a evdx:Book .
+			VALUES (?book ?code) { (1 "94700120") (1 "12867416") (2 "102070469") (2 "13909")}
+			?s evdx:hasCode ?code .
+			?m a evdx:Module .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+		} group by ?book
 
 
