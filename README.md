@@ -225,33 +225,34 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 - Which Modules (including details about Departments/Universities) have been added in the second academic year compared to the first
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
-	where { 
-		?s a evdx:Book .
-		?s evdx:hasCode "94700120" .
-		?m a evdx:Module .
-		?m evdx:title ?mt .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year 2022 .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?d evdx:name ?dn .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-		?u evdx:name ?un .
-		FILTER NOT EXISTS {
-			?c1 evdx:year 2021 .
-			?c1 evdx:hasModule ?m1 .
-			?m1 a evdx:Module .
-			?m1 evdx:hasBook ?s .
-			?m1 evdx:title ?mt .
-			?c1 a evdx:Course .
-			?d evdx:hasCourse ?c1 .
-		}
-	} group by ?un ?dn
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
+		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?mt) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:hasCode "94700120" .
+			?m a evdx:Module .
+			?m evdx:title ?mt .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?d evdx:name ?dn .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+			?u evdx:name ?un .
+			FILTER NOT EXISTS {
+				?c1 evdx:year 2021 .
+				?c1 evdx:hasModule ?m1 .
+				?m1 a evdx:Module .
+				?m1 evdx:hasBook ?s .
+				?m1 evdx:title ?mt .
+				?c1 a evdx:Course .
+				?d evdx:hasCourse ?c1 .
+			}
+		} group by ?un ?dn
+
 
 
 In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Modules (including details about University/Department) have been deleted from the first academic year compared to the second one.
