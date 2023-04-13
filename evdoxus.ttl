@@ -1,0 +1,91 @@
+# baseURI: http://lpis.csd.auth.gr/ontologies/evdoxus
+# prefix: evdx
+
+@prefix evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://lpis.csd.auth.gr/ontologies/evdoxus>
+  rdf:type owl:Ontology ;
+  owl:versionInfo "Created with TopBraid Composer" ;
+.
+evdx:AcademicEntity
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf rdfs:Resource ;
+.
+evdx:Book
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf evdx:LearningEntity ;
+.
+evdx:Course
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf evdx:LearningEntity ;
+.
+evdx:Department
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf evdx:AcademicEntity ;
+.
+evdx:LearningEntity
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf rdfs:Resource ;
+.
+evdx:Module
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf evdx:LearningEntity ;
+.
+evdx:University
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf evdx:AcademicEntity ;
+.
+evdx:hasBook
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:Module ;
+  rdfs:range evdx:Book ;
+.
+evdx:hasCode
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:LearningEntity ;
+  rdfs:range xsd:string ;
+.
+evdx:hasCourse
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:Department ;
+  rdfs:range evdx:Course ;
+.
+evdx:hasDepartment
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:University ;
+  rdfs:range evdx:Department ;
+.
+evdx:hasModule
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:Course ;
+  rdfs:range evdx:Module ;
+.
+evdx:hasURL
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:LearningEntity ;
+  rdfs:range xsd:anyURI ;
+.
+evdx:name
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:AcademicEntity ;
+  rdfs:range xsd:string ;
+.
+evdx:semester
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:Module ;
+  rdfs:range xsd:integer ;
+.
+evdx:title
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:LearningEntity ;
+  rdfs:range xsd:string ;
+.
+evdx:year
+  rdf:type rdf:Property ;
+  rdfs:domain evdx:Course ;
+  rdfs:range xsd:integer ;
+.
