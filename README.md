@@ -49,25 +49,25 @@ These competency questions have been derived from the various predicates of the 
 - Return all modules that the book is used, along with the Department and the University
 
 
-	PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-	select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (?mt as ?Μάθημα) 
-	where { 
-		?s a evdx:Book .
-		VALUES ?code {"94700120"}
-		?s evdx:hasCode ?code .
-		?m a evdx:Module .
-		?m evdx:title ?mt .
-		?m evdx:hasBook ?s .
-		?c a evdx:Course .
-		?c evdx:year 2022 .
-		?c evdx:hasModule ?m .
-		?d a evdx:Department .
-		?d evdx:hasCourse ?c .
-		?d evdx:name ?dn .
-		?u a evdx:University .
-		?u evdx:hasDepartment ?d .
-		?u evdx:name ?un .
-	}
+		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
+		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (?mt as ?Μάθημα) 
+		where { 
+			?s a evdx:Book .
+			VALUES ?code {"94700120"}
+			?s evdx:hasCode ?code .
+			?m a evdx:Module .
+			?m evdx:title ?mt .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?d evdx:name ?dn .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+			?u evdx:name ?un .
+		}
 
 Inside VALUES multiple book IDs can be used (e.g. various editions of the same book).
 
