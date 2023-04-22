@@ -6,14 +6,14 @@ A Prolog application for creating a Knowledge Graph of textbooks for Greek Unive
 - (1) When you run the Program for the first time, you should initialize the cache by running (it takes some time):
 
 
-	?- init_cache.
+		?- init_cache.
 
 This initializes the cache, downloading all course pages.
 
 - (2) Each new academic year, the cache should be updated with the new courses by running: 
 
 
-	?- update_cache.
+		?- update_cache.
 
 This incrementally caches the course pages of the new academic year.
 
@@ -21,13 +21,13 @@ This incrementally caches the course pages of the new academic year.
 and generate thw Knowledge Graph in RDF internally inside SWI-Prolog, you should run:
 
 
-	?- extract_courses.
+		?- extract_courses.
 
 
 - (4) After creating the KG, you can save it in a local file, in Turtle format, using thew following:
 
 
-	?- rdf_save_turtle('evdoxus-all-20230404.ttl',[]).
+		?- rdf_save_turtle('evdoxus-all-20230404.ttl',[]).
 
 Of course, the corrrect filename should be used.
 
