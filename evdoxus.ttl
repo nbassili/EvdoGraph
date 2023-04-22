@@ -1,13 +1,23 @@
-# baseURI: http://lpis.csd.auth.gr/ontologies/evdoxus
+# baseURI: http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl
 # prefix: evdx
 
-@prefix evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#> .
+@prefix evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#> .
+@prefix aiiso: <http://purl.org/vocab/aiiso/schema#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix teach: <http://linkedscience.org/teach/ns#> .
+@prefix vivo: <http://vivoweb.org/ontology/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix vCard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-<http://lpis.csd.auth.gr/ontologies/evdoxus>
+
+<http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl>
   rdf:type owl:Ontology ;
   owl:versionInfo "Created with TopBraid Composer" ;
 .
@@ -17,15 +27,18 @@ evdx:AcademicEntity
 .
 evdx:Book
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:LearningEntity ;
+  rdfs:subClassOf evdx:LearningEntity, teach:Material ;
+  owl:equivalentClass bibo:Book, schema:Book, dbo:Book ;
 .
 evdx:Course
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:LearningEntity ;
+  rdfs:subClassOf evdx:LearningEntity, schema:EducationalOccupationalProgram ;
+  owl:equivalentClass aiiso:Programme, teach:StudyProgram ;
 .
 evdx:Department
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:AcademicEntity ;
+  rdfs:subClassOf evdx:AcademicEntity, schema:School ;
+  owl:equivalentClass vivo:AcademicDepartment, aiiso:Department ;
 .
 evdx:LearningEntity
   rdf:type rdfs:Class ;
@@ -34,58 +47,75 @@ evdx:LearningEntity
 evdx:Module
   rdf:type rdfs:Class ;
   rdfs:subClassOf evdx:LearningEntity ;
+  owl:equivalentClass vivo:Course, aiiso:Course, teach:Course, schema:Course ;
 .
 evdx:University
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:AcademicEntity ;
+  rdfs:subClassOf evdx:AcademicEntity, aiiso:Institution, schema:CollegeOrUniversity ;
+  owl:equivalentClass vivo:University, dbo:University ;
 .
 evdx:hasBook
   rdf:type rdf:Property ;
   rdfs:domain evdx:Module ;
   rdfs:range evdx:Book ;
+  rdfs:subPropertyOf teach:reading ;
 .
 evdx:hasCode
   rdf:type rdf:Property ;
   rdfs:domain evdx:LearningEntity ;
   rdfs:range xsd:string ;
+  rdfs:subPropertyOf aiiso:code ;
 .
 evdx:hasCourse
   rdf:type rdf:Property ;
   rdfs:domain evdx:Department ;
   rdfs:range evdx:Course ;
+  rdfs:subPropertyOf aiiso:teaches ;
+  owl:inverseOf schema:provider ;
 .
 evdx:hasDepartment
   rdf:type rdf:Property ;
   rdfs:domain evdx:University ;
   rdfs:range evdx:Department ;
+  rdfs:subPropertyOf aiiso:organization, schema:department ;
 .
 evdx:hasModule
   rdf:type rdf:Property ;
   rdfs:domain evdx:Course ;
   rdfs:range evdx:Module ;
+  rdfs:subPropertyOf aiiso:knowledgeGrouping  ;
+  owl:equivalentProperty schema:hasCourse ;
+  owl:inverseOf teach:studyProgram ;
 .
 evdx:hasURL
   rdf:type rdf:Property ;
   rdfs:domain evdx:LearningEntity ;
   rdfs:range xsd:anyURI ;
+  owl:equivalentProperty schema:url, vCard:hasURL ;
 .
 evdx:name
   rdf:type rdf:Property ;
   rdfs:domain evdx:AcademicEntity ;
   rdfs:range xsd:string ;
+  owl:equivalentProperty vCard:hasOrganizationName ;
+  rdfs:subPropertyOf foaf:name ;
 .
 evdx:semester
   rdf:type rdf:Property ;
   rdfs:domain evdx:Module ;
   rdfs:range xsd:integer ;
+  rdfs:subPropertyOf teach:academicTerm ;
 .
 evdx:title
   rdf:type rdf:Property ;
   rdfs:domain evdx:LearningEntity ;
   rdfs:range xsd:string ;
+  owl:equivalentProperty vCard:title ;
+  rdfs:subPropertyOf teach:hasTitle ;
 .
 evdx:year
   rdf:type rdf:Property ;
   rdfs:domain evdx:Course ;
   rdfs:range xsd:integer ;
+  rdfs:subPropertyOf schema:startDate, dbo:startYear ;
 .

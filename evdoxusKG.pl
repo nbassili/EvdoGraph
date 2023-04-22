@@ -8,8 +8,9 @@
 
 :- [cache_courses].
 
+:- dynamic extracted_info/2.
 
-:- rdf_register_prefix(dbo,'http://dbpedia.org/ontology'),
+:- rdf_register_prefix(dbo,'http://dbpedia.org/ontology/'),
    rdf_register_prefix(dbr,'http://dbpedia.org/resource/'),
    rdf_register_prefix('dbpedia-el','http://el.dbpedia.org/resource/').
 
@@ -24,12 +25,12 @@
 % You can extract courses to RDF inside SWI-Prolog by running:
 %    :- extract_courses.
 % Time stats @ Univeristy PC:
-% 5,821,316,965 inferences, 237.234 CPU in 368.808 seconds (64% CPU, 24538252 Lips)
+% 5,913,828,347 inferences, 223.922 CPU in 379.408 seconds (59% CPU, 26410231 Lips)
 % Afterwards, you run the following to save the triples (using correct filename).
-%    :- rdf_save_turtle('evdoxus-all-20230404.ttl',[]).
-% Saved 3,934,457 triples about 593,925 subjects into 'evdoxus-all-20230411.ttl' (29.203 sec)
+%    :- rdf_save_turtle('evdoxus-all-20230420.ttl',[]).
+% Saved 3,887,407 triples about 585,984 subjects into 'evdoxus-all-20230420.ttl' (32.375 sec)
 % in GraphDB you must CLEAR DEFAULT
-% Imported successfully in 4m 36s. (GRAPHDB)
+% Imported successfully in 10m 1s.. (GRAPHDB)
 
 extract_courses :-
 	write('Extracting and linking Universities...'), nl, nl,
@@ -37,6 +38,22 @@ extract_courses :-
 	generate_universities(UnivList),
 	nl, write('Extracting Departments, Courses, Modules and Books...'), nl, nl,
 	extract_departments_courses(HTML,DC_List),
+	generate_departments_courses(DC_List).
+
+% You can run extract_courses in two phases. First use extract_courses_c to do all the extraction from HTML pages (it takes a long time)
+% Then you can use generate_courses_c to generate the RDF graph. This separation is usefull for debugging purposes on the second phase.
+extract_courses_c :-
+	write('Extracting Universities...'), nl, nl,
+	extract_universities(UnivList,HTML),
+	nl, write('Extracting Departments, Courses, Modules and Books...'), nl, nl,
+	extract_departments_courses(HTML,DC_List),
+	assert(extracted_info(UnivList,DC_List)).
+
+generate_courses_c :-
+	extracted_info(UnivList,DC_List),
+	write('Linking Universities...'), nl, nl,
+	generate_universities(UnivList),
+	nl, write('Extracting Departments, Courses, Modules and Books...'), nl, nl,
 	generate_departments_courses(DC_List).
 
 extract_universities(UnivList,HTML) :-
@@ -137,16 +154,23 @@ generate_modules(CourseURI, DeptCode, CourseYear, CourseModulesBooks) :-
 %generate_modules(X, CourseURI, DeptCode, CourseYear, CourseModulesBooks),
 generate_modules_aux(_, _CourseURI, _DeptCode, _CourseYear, []).
 generate_modules_aux(X, CourseURI, DeptCode, CourseYear, [ModuleName-ModuleCode-Semester-ModuleBooks|RestCourseModulesBooks]) :-
+	find_or_create_module(X,CourseURI,DeptCode,CourseYear,ModuleName,ModuleCode,ModuleURI),
+	rdf_assert(ModuleURI, evdx:semester, Semester^^xsd:integer),
+	generate_books(ModuleURI,ModuleBooks),   % CHECK HERE
+	X1 is X + 1,
+	generate_modules_aux(X1, CourseURI, DeptCode, CourseYear, RestCourseModulesBooks).
+
+find_or_create_module(_X,CourseURI,_DeptCode,_CourseYear,ModuleName,ModuleCode,ModuleURI) :-
+	rdf(ModuleURI,evdx:hasCode,ModuleCode^^xsd:string), 
+	rdf(ModuleURI,evdx:title,ModuleName^^xsd:string),
+	rdf(CourseURI,evdx:hasModule,ModuleURI), !.
+find_or_create_module(X,CourseURI,DeptCode,CourseYear,ModuleName,ModuleCode,ModuleURI) :-
 	rdf_current_prefix(evdx,EvdxURI),
 	atomic_list_concat([EvdxURI,module_,DeptCode,'_',CourseYear,'_',X],ModuleURI),
 	rdf_assert(CourseURI, evdx:hasModule, ModuleURI),
 	rdf_assert(ModuleURI, rdf:type, evdx:'Module'),
 	rdf_assert(ModuleURI, evdx:title, ModuleName^^xsd:string),
-	rdf_assert(ModuleURI, evdx:hasCode, ModuleCode^^xsd:string),
-	rdf_assert(ModuleURI, evdx:semester, Semester^^xsd:integer),
-	generate_books(ModuleURI,ModuleBooks),
-	X1 is X + 1,
-	generate_modules_aux(X1, CourseURI, DeptCode, CourseYear, RestCourseModulesBooks).
+	rdf_assert(ModuleURI, evdx:hasCode, ModuleCode^^xsd:string).
 
 %generate_books(ModuleURI,ModuleBooks),
 generate_books(_ModuleURI,[]).
@@ -238,7 +262,6 @@ search_university(UnivName,GRDBPediaURL,GBDBPediaURL) :-
 	xpath(UL,li(1),LI),
 	xpath(LI,//div(1),DIV),
 	xpath(DIV,a(@href),LocalWikiURL),
-	%stop_here,
 	xpath(DIV,a(@title),ResultTitle),
 	((xpath(DIV,span(@class='searchalttitle'),Span),
 	  xpath(Span,a(@class='mw-redirect',@title),AltTitle))
@@ -299,7 +322,6 @@ find_en_dbpedia(WikipediaURL,_ELDBPediaURL,ENDBPediaURL) :-
 	set_stream(In, encoding(utf8)),
 	load_structure(In, HTML,  [ dialect(xml), max_errors(-1),syntax_errors(quiet) ]),
 	close(In),
-	%stop_here,
 	xpath(HTML,//a(@class='interlanguage-link-target', @hreflang='en', @href),ENWikiURL),
 	wikipedia_to_dbpedia_url(en,ENWikiURL,ENDBPediaURL).
 
@@ -318,7 +340,6 @@ list_replace(X,Y,[H|T],[H|T1]) :-
 
 string_replace(Str1,Str2,StringIn,StringOut) :-
 	sub_string(StringIn, Before, Length, After, Str1), !,
-	%B is Before - 1,
 	sub_string(StringIn, 0, Before, _, Prefix),
 	P is Before + Length,
 	sub_string(StringIn, P, After, 0, Suffix),
@@ -361,7 +382,6 @@ delay(N) :-
 compare_names(UnivName,UnivAltNames) :-
 	score_names(UnivName,UnivAltNames,UnivAltScores),
 	max_list(UnivAltScores,MaxScore),
-	%write('Score : '), write(MaxScore), nl,
 	MaxScore > 0.75.
 
 score_names(_UnivName,[],[]).
