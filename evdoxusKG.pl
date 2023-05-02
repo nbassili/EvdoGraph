@@ -82,7 +82,7 @@ generate_universities_aux([UnivNo-UnivName|RestUniversities],X,N) :-
 	rdf_assert(UnivURI, evdx:name, UnivName^^xsd:string),
 	search_university(UnivName,ELDBPediaURL,ENDBPediaURL),
 	(ENDBPediaURL \= null -> rdf_assert(UnivURI, owl:sameAs, ENDBPediaURL); true),
-	rdf_assert(UnivURI, owl:sameAs, ELDBPediaURL),
+	(ELDBPediaURL \= null -> rdf_assert(UnivURI, owl:sameAs, ELDBPediaURL); true),
 	write(UnivName), nl,
 	X1 is X + 1,
 	generate_universities_aux(RestUniversities,X1,N).
