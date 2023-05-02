@@ -49,8 +49,8 @@ These competency questions have been derived from the various predicates of the 
 - Return all modules that the book is used, along with the Department and the University
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (?mt as ?Μάθημα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (?mt as ?Module) 
 		where { 
 			?s a evdx:Book .
 			VALUES ?code {"94700120"}
@@ -74,8 +74,8 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 - Return how many modules and all module names (in a string), that the book is used, along with the Department and the University, group by Department
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα)  (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department)  (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -103,8 +103,8 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 - Return in how many modules, of how many Departments and how many Universities the book is used
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(DISTINCT ?m) as ?ΑριθμόςΜαθημάτων) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (count(DISTINCT ?u) as ?Universities) (count(DISTINCT ?d) as ?Departments) (count(DISTINCT ?m) as ?NoOfModules) 
 		where { 
 			?s a evdx:Book .
 			VALUES ?code { "102070469" "13909" }
@@ -124,8 +124,8 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 - Return in how many modules, of how many Departments and how many Universities the book is used, per year, for a range of years
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/evdoxus#>
-		select ?year (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(DISTINCT ?m) as ?ΑριθμόςΜαθημάτων) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select ?year (count(DISTINCT ?u) as ?Universities) (count(DISTINCT ?d) as ?Departments) (count(DISTINCT ?m) as ?NoOfModules) 
 		where { 
 			?s a evdx:Book .
 			VALUES ?code { "94700120" "12867416" }
@@ -147,8 +147,8 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 - Which Departments (including details about University/Modules) have been added in the second academic year compared to the first
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -189,8 +189,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 - Which Universities (including details about Departments/Modules) have been added in the second academic year compared to the first
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -233,8 +233,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 - Which Modules (including details about Departments/Universities) have been added in the second academic year compared to the first
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα)  
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules)  
 		where {
 			?m evdx:title ?mt .
 			{
@@ -277,8 +277,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 - Return comparison details and statistics for multiple books for a specific academic year.
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (group_concat(DISTINCT ?code;separator=", ") as ?Βιβλίο) (count(DISTINCT ?u) as ?Πανεπιστήμια) (count(DISTINCT ?d) as ?Τμήματα) (count(?m) as ?ΑριθμόςΜαθημάτων) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (group_concat(DISTINCT ?code;separator=", ") as ?Book) (count(DISTINCT ?u) as ?Universities) (count(DISTINCT ?d) as ?Departments) (count(DISTINCT ?m) as ?NoOfModules) 
 		where {
 			?s a evdx:Book .
 			VALUES (?book ?code) { (1 "94700120") (1 "12867416") (2 "102070469") (2 "13909")}
@@ -298,8 +298,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 - Which modules (including details about Departments/Universities) use only the first book and not the second
 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -331,8 +331,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 
 - Which Departments (including details about University/Modules) use only the first book and not the second
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -366,8 +366,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 
 - Which Universities (including details about Departments/Modules) use only the first book and not the second
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -405,8 +405,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 
 - Which modules (including details about Departments/Universities) use both books 
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -438,8 +438,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 
 - Which Departments (including details about University/Modules) use both books
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (?dn as ?Τμήμα) (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			{
@@ -473,8 +473,8 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 
 - Which Universities (including details about Department/Modules) use both books
 
-		PREFIX evdx: <http://lpis.csd.auth.gr/ontologies/2023/evdoxus.ttl#>
-		select (?un as ?Πανεπιστήμιο) (count(distinct ?d) as ?ΑριθμόςΤμημάτων)(group_concat(?dn;separator=", ") as ?Τμήματα)  (count(?m) as ?ΑριθμόςΜαθημάτων) (group_concat(?mt;separator=", ") as ?Μαθήματα) 
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select (?un as ?University) (count(distinct ?d) as ?ΑριθμόςΤμημάτων)(group_concat(?dn;separator=", ") as ?Departments)  (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
 		where {
 			?m evdx:title ?mt .
 			?d evdx:name ?dn .
