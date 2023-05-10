@@ -15,6 +15,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix vCard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix bow: <https://diuf.unifr.ch/xi/bowlogna/> .
 
 
 <https://w3id.org/evdoxus>
@@ -33,12 +34,12 @@ evdx:Book
 evdx:Course
   rdf:type rdfs:Class ;
   rdfs:subClassOf evdx:LearningEntity, schema:EducationalOccupationalProgram ;
-  owl:equivalentClass aiiso:Programme, teach:StudyProgram ;
+  owl:equivalentClass aiiso:Programme, teach:StudyProgram, bow:Study_Program ;
 .
 evdx:Department
   rdf:type rdfs:Class ;
   rdfs:subClassOf evdx:AcademicEntity, schema:School ;
-  owl:equivalentClass vivo:AcademicDepartment, aiiso:Department ;
+  owl:equivalentClass vivo:AcademicDepartment, aiiso:Department, bow:Department ;
 .
 evdx:LearningEntity
   rdf:type rdfs:Class ;
@@ -47,7 +48,7 @@ evdx:LearningEntity
 evdx:Module
   rdf:type rdfs:Class ;
   rdfs:subClassOf evdx:LearningEntity ;
-  owl:equivalentClass vivo:Course, aiiso:Course, teach:Course, schema:Course ;
+  owl:equivalentClass vivo:Course, aiiso:Course, teach:Course, schema:Course, bow:Module ;
 .
 evdx:University
   rdf:type rdfs:Class ;
@@ -98,7 +99,7 @@ evdx:name
   rdfs:domain evdx:AcademicEntity ;
   rdfs:range xsd:string ;
   owl:equivalentProperty vCard:hasOrganizationName ;
-  rdfs:subPropertyOf foaf:name ;
+  rdfs:subPropertyOf foaf:name, bow:hasName ;
 .
 evdx:semester
   rdf:type rdf:Property ;
@@ -111,11 +112,11 @@ evdx:title
   rdfs:domain evdx:LearningEntity ;
   rdfs:range xsd:string ;
   owl:equivalentProperty vCard:title ;
-  rdfs:subPropertyOf teach:hasTitle ;
+  rdfs:subPropertyOf teach:hasTitle, bow:hasName ;
 .
 evdx:year
   rdf:type rdf:Property ;
   rdfs:domain evdx:Course ;
   rdfs:range xsd:integer ;
-  rdfs:subPropertyOf schema:startDate, dbo:startYear ;
+  rdfs:subPropertyOf schema:startDate, dbo:startYear, bow:beginsToApplyOnDate ;
 .

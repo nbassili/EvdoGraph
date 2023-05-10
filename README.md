@@ -510,3 +510,71 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?un
 
 
+- Which Departments (and their university) are not active during a specific academic year (they have a course with no modules)
+
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select ?dn ?un where { 
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?d evdx:hasCourse ?c .
+			?d evdx:name ?dn .
+			?u evdx:hasDepartment ?d .
+			?u evdx:name ?un .
+			FILTER NOT EXISTS {
+				?c evdx:hasModule ?m .
+			}
+		}
+
+
+- Which Universities are not active during a specific academic year (the courses of all their departments have no modules)
+
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select ?u ?un where { 
+			?u a evdx:University .
+			?u evdx:name ?un .
+			FILTER NOT EXISTS {
+				?u evdx:hasDepartment ?d .
+				?d evdx:hasCourse ?c .
+				?c evdx:year 2022 .
+				?c evdx:hasModule ?m .
+			}
+		}
+
+
+- Complete list of all books, with their title and how many modules, departments and universities use it, for a specific year. Order in descending order of the University count.
+
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select ?bt (count(DISTINCT ?u) as ?Universities) (count(DISTINCT ?d) as ?Departments) (count(DISTINCT ?m) as ?Modules) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:title ?bt .
+			?m a evdx:Module .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+			?u a evdx:University .
+			?u evdx:hasDepartment ?d .
+		} group by ?s ?bt
+		order by desc(?Universities)
+
+
+- Complete list of all books, with their title and how many modules, departments and universities use it, for a specific year. Order in descending order of the Department and Module count.
+
+		PREFIX evdx: <https://w3id.org/evdoxus#>
+		select ?bt  (count(DISTINCT ?d) as ?Departments) (count(DISTINCT ?m) as ?Modules) 
+		where { 
+			?s a evdx:Book .
+			?s evdx:title ?bt .
+			?m a evdx:Module .
+			?m evdx:hasBook ?s .
+			?c a evdx:Course .
+			?c evdx:year 2022 .
+			?c evdx:hasModule ?m .
+			?d a evdx:Department .
+			?d evdx:hasCourse ?c .
+		} group by ?s ?bt
+		order by desc(?Departments) desc(?Modules)
+

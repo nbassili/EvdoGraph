@@ -25,12 +25,12 @@
 % You can extract courses to RDF inside SWI-Prolog by running:
 %    :- extract_courses.
 % Time stats @ Univeristy PC:
-% 5,913,828,347 inferences, 223.922 CPU in 379.408 seconds (59% CPU, 26410231 Lips)
+% 5,913,864,123 inferences, 230.375 CPU in 450.964 seconds (51% CPU, 25670598 Lips)
 % Afterwards, you run the following to save the triples (using correct filename).
 %    :- rdf_save_turtle('evdoxus-all-20230420.ttl',[]).
-% Saved 3,887,407 triples about 585,984 subjects into 'evdoxus-all-20230420.ttl' (32.375 sec)
+% Saved 3,887,410 triples about 585,984 subjects into 'evdoxus-all-20230510.ttl' (27.984 sec)
 % in GraphDB you must CLEAR DEFAULT
-% Imported successfully in 10m 1s.. (GRAPHDB)
+% Imported successfully in 10m 49s.. (GRAPHDB)
 
 extract_courses :-
 	write('Extracting and linking Universities...'), nl, nl,
