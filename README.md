@@ -39,9 +39,7 @@ Of course, the corrrect filename should be used.
 
 After this, the .ttl file can be uploaded in a Triplestore, such as GraphDB, or Virtuoso.
 
-You could use the following installation:
-
-	[http://lod.csd.auth.gr:7200/sparql](http://lod.csd.auth.gr:7200/sparql)
+You could use the following installation: http://lod.csd.auth.gr:7200/sparql
 	
 You should select the "Evdoxus" repository (pull-down menu at upper-right corner).
 
