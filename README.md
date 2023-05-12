@@ -3,6 +3,12 @@ EvdoGraph: A Knowledge Graph for the EVDOXUS textbook management service
 A Prolog application for creating a Knowledge Graph of textbooks for Greek Universities from the Evdoxus service
 ================================================================================================================
 
+The main file that should be consulted is 'evdoxusKG.pl'. It consults all the other necessary files.
+
+
+		?- consult('evdoxusKG.pl').
+
+
 - (1) When you run the Program for the first time, you should initialize the cache by running (it takes some time):
 
 
