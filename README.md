@@ -31,14 +31,14 @@ The main file that should be consulted is 'evdoxusKG.pl'. It consults all the ot
 
 		?- init_cache.
 
-This initializes the cache, downloading all course pages.
+	This initializes the cache, downloading all course pages.
 
 1. Each new academic year, the cache should be updated with the new courses by running: 
 
 
 		?- update_cache.
 
-This incrementally caches the course pages of the new academic year.
+	This incrementally caches the course pages of the new academic year.
 
 1. When you want to extract all the information from the Evdoxus web service about books, courses, modules, Department and Universities, 
 and generate thw Knowledge Graph in RDF internally inside SWI-Prolog, you should run:
@@ -52,7 +52,7 @@ and generate thw Knowledge Graph in RDF internally inside SWI-Prolog, you should
 
 		?- rdf_save_turtle('evdoxus-all-20230404.ttl',[]).
 
-Of course, the corrrect filename should be used.
+	Of course, the corrrect filename should be used.
 
 After this, the .ttl file can be uploaded in a Triplestore, such as GraphDB, or Virtuoso.
 
