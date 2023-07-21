@@ -1,7 +1,24 @@
 EvdoGraph: A Knowledge Graph for the EVDOXUS textbook management service
+================================================================================================================
 
 A Prolog application for creating a Knowledge Graph of textbooks for Greek Universities from the Evdoxus service
-================================================================================================================
+----------------------------------------------------------------------------------------------------------------
+
+[Evdoxus](https://eudoxus.gr/) is a web information system for the management of the total ecosystem for the free provision of textbooks 
+to the undergraduate students at the Greek Universities. Among its users are book publishers that register textbooks, faculty members 
+that search for appropriate textbooks for their courses, administration of university departments that register the relevant textbooks 
+for each module of the curricula (course), and finally, students that select one book per module that they attend. All the above information 
+(except for which students selected which books) is freely available at the Evdoxus site in the form of HTML web pages. 
+
+The EvdoGraph project extracts this information and converts it into an open Knowledge Graph in RDF that can be used to generate several 
+interesting reports and answer statistical analysis questions in SPARQL, included below. The KG is backed by a simple ontology which is aligned 
+with some well-known ontologies. The extraction / conversion application has been developed using SWI-Prolog's XPath and Semantic Web libraries. 
+The KG encompasses the Linked Open Data initiative by linking University entities with their corresponding DBpedia entries, 
+employing the Wikipedia search engine and the DBpedia SPARQL endpoint.
+
+
+Running EvdoGraph
+=================
 
 The main file that should be consulted is 'evdoxusKG.pl'. It consults all the other necessary files.
 
