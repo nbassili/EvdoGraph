@@ -18,7 +18,7 @@ employing the Wikipedia search engine and the DBpedia SPARQL endpoint.
 
 
 Running EvdoGraph
-=================
+-----------------
 
 The main file that should be consulted is 'evdoxusKG.pl'. It consults all the other necessary files.
 
@@ -62,7 +62,7 @@ You should select the "Evdoxus" repository (pull-down menu at upper-right corner
 
 
 SPARQL queries
-==============
+--------------
 
 The following SPARQL queries implement several Competency Questions for the Evdoxus Ontology-Knowledge Graph.
 These competency questions have been derived from the various predicates of the [EvdoStats](https://github.com/nbassili/EvdoStats) project.
