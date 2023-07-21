@@ -1,7 +1,7 @@
 EvdoGraph: A Knowledge Graph for the EVDOXUS textbook management service
 ================================================================================================================
 
-A Prolog application for creating a Knowledge Graph of textbooks for Greek Universities from the Evdoxus service
+### A Prolog application for creating a Knowledge Graph of textbooks for Greek Universities from the Evdoxus service
 ----------------------------------------------------------------------------------------------------------------
 
 [Evdoxus](https://eudoxus.gr/) is a web information system for the management of the total ecosystem for the free provision of textbooks 
