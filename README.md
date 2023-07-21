@@ -26,28 +26,28 @@ The main file that should be consulted is 'evdoxusKG.pl'. It consults all the ot
 		?- consult('evdoxusKG.pl').
 
 
-- (1) When you run the Program for the first time, you should initialize the cache by running (it takes some time):
+1. When you run the Program for the first time, you should initialize the cache by running (it takes some time):
 
 
 		?- init_cache.
 
 This initializes the cache, downloading all course pages.
 
-- (2) Each new academic year, the cache should be updated with the new courses by running: 
+1. Each new academic year, the cache should be updated with the new courses by running: 
 
 
 		?- update_cache.
 
 This incrementally caches the course pages of the new academic year.
 
-- (3) When you want to extract all the information from the Evdoxus web service about books, courses, modules, Department and Universities, 
+1. When you want to extract all the information from the Evdoxus web service about books, courses, modules, Department and Universities, 
 and generate thw Knowledge Graph in RDF internally inside SWI-Prolog, you should run:
 
 
 		?- extract_courses.
 
 
-- (4) After creating the KG, you can save it in a local file, in Turtle format, using thew following:
+1. After creating the KG, you can save it in a local file, in Turtle format, using thew following:
 
 
 		?- rdf_save_turtle('evdoxus-all-20230404.ttl',[]).
