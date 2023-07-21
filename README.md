@@ -67,7 +67,7 @@ SPARQL queries
 The following SPARQL queries implement several Competency Questions for the Evdoxus Ontology-Knowledge Graph.
 These competency questions have been derived from the various predicates of the [EvdoStats](https://github.com/nbassili/EvdoStats) project.
 
-- Return all modules that the book is used, along with the Department and the University
+1. Return all modules that the book is used, along with the Department and the University
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -90,9 +90,9 @@ These competency questions have been derived from the various predicates of the 
 			?u evdx:name ?un .
 		}
 
-Inside VALUES multiple book IDs can be used (e.g. various editions of the same book).
+	Inside VALUES multiple book IDs can be used (e.g. various editions of the same book).
 
-- Return how many modules and all module names (in a string), that the book is used, along with the Department and the University, group by Department
+1. Return how many modules and all module names (in a string), that the book is used, along with the Department and the University, group by Department
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -121,7 +121,7 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 		} group by ?un ?dn
 
 
-- Return in how many modules, of how many Departments and how many Universities the book is used
+1. Return in how many modules, of how many Departments and how many Universities the book is used
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -142,7 +142,7 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 		}
 
 
-- Return in how many modules, of how many Departments and how many Universities the book is used, per year, for a range of years
+1. Return in how many modules, of how many Departments and how many Universities the book is used, per year, for a range of years
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -165,7 +165,7 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 		  order by ?year
 
 
-- Which Departments (including details about University/Modules) have been added in the second academic year compared to the first
+1. Which Departments (including details about University/Modules) have been added in the second academic year compared to the first
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -205,9 +205,9 @@ Inside VALUES multiple book IDs can be used (e.g. various editions of the same b
 
 
 
-In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Departments (including details about University/Modules) have been deleted from the first academic year compared to the second one.
+	In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Departments (including details about University/Modules) have been deleted from the first academic year compared to the second one.
 
-- Which Universities (including details about Departments/Modules) have been added in the second academic year compared to the first
+1. Which Universities (including details about Departments/Modules) have been added in the second academic year compared to the first
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -249,9 +249,9 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 
 
 
-In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Universities (including details about Departments/Modules) have been deleted from the first academic year compared to the second one.
+	In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Universities (including details about Departments/Modules) have been deleted from the first academic year compared to the second one.
 
-- Which Modules (including details about Departments/Universities) have been added in the second academic year compared to the first
+1. Which Modules (including details about Departments/Universities) have been added in the second academic year compared to the first
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -293,9 +293,9 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 
 
 
-In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Modules (including details about University/Department) have been deleted from the first academic year compared to the second one.
+	In the above query if we change the years inside and outside FILTER NOT EXISTS, then we get which Modules (including details about University/Department) have been deleted from the first academic year compared to the second one.
 
-- Return comparison details and statistics for multiple books for a specific academic year.
+1. Return comparison details and statistics for multiple books for a specific academic year.
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -316,7 +316,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?book
 
 
-- Which modules (including details about Departments/Universities) use only the first book and not the second
+1. Which modules (including details about Departments/Universities) use only the first book and not the second
 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
@@ -350,7 +350,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?un ?dn
 
 
-- Which Departments (including details about University/Modules) use only the first book and not the second
+1. Which Departments (including details about University/Modules) use only the first book and not the second
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
@@ -385,7 +385,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?un ?dn
 
 
-- Which Universities (including details about Departments/Modules) use only the first book and not the second
+1. Which Universities (including details about Departments/Modules) use only the first book and not the second
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
@@ -424,7 +424,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?un ?dn
 
 
-- Which modules (including details about Departments/Universities) use both books 
+1. Which modules (including details about Departments/Universities) use both books 
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
@@ -457,7 +457,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?un ?dn
 
 
-- Which Departments (including details about University/Modules) use both books
+1. Which Departments (including details about University/Modules) use both books
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select (?un as ?University) (?dn as ?Department) (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
@@ -492,7 +492,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?un ?dn
 
 
-- Which Universities (including details about Department/Modules) use both books
+1. Which Universities (including details about Department/Modules) use both books
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select (?un as ?University) (count(distinct ?d) as ?ΑριθμόςΤμημάτων)(group_concat(?dn;separator=", ") as ?Departments)  (count(?m) as ?NoOfModules) (group_concat(?mt;separator=", ") as ?Modules) 
@@ -531,7 +531,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		} group by ?un
 
 
-- Which Departments (and their university) are not active during a specific academic year (they have a course with no modules)
+1. Which Departments (and their university) are not active during a specific academic year (they have a course with no modules)
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select ?dn ?un where { 
@@ -547,7 +547,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		}
 
 
-- Which Universities are not active during a specific academic year (the courses of all their departments have no modules)
+1. Which Universities are not active during a specific academic year (the courses of all their departments have no modules)
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select ?u ?un where { 
@@ -562,7 +562,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		}
 
 
-- Complete list of all books, with their title and how many modules, departments and universities use it, for a specific year. Order in descending order of the University count.
+1. Complete list of all books, with their title and how many modules, departments and universities use it, for a specific year. Order in descending order of the University count.
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select ?bt (count(DISTINCT ?u) as ?Universities) (count(DISTINCT ?d) as ?Departments) (count(DISTINCT ?m) as ?Modules) 
@@ -582,7 +582,7 @@ In the above query if we change the years inside and outside FILTER NOT EXISTS, 
 		order by desc(?Universities)
 
 
-- Complete list of all books, with their title and how many modules, departments and universities use it, for a specific year. Order in descending order of the Department and Module count.
+1. Complete list of all books, with their title and how many modules, departments and universities use it, for a specific year. Order in descending order of the Department and Module count.
 
 		PREFIX evdx: <https://w3id.org/evdoxus#>
 		select ?bt  (count(DISTINCT ?d) as ?Departments) (count(DISTINCT ?m) as ?Modules) 
