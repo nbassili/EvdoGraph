@@ -16,6 +16,11 @@ with some well-known ontologies. The extraction / conversion application has bee
 The KG encompasses the Linked Open Data initiative by linking University entities with their corresponding DBpedia entries, 
 employing the Wikipedia search engine and the DBpedia SPARQL endpoint.
 
+The possible uses for the KG are countless. Appart from the SPARQL queries shown below, the KG could be used for marketing purposes, i.e., publishers could have an instant clear picture of the University market in order to strategically decide for new books or promotion targets, or faculty researchers could analyse the Greek Higher Education landscape, i.e., analyse what kind of courses are taught at various disciplines, or compare study programs at different Universities / Departments.
+
+Ideas for future work could include the more fine-grained treatment of textbooks, as currently their title is actually the whole citation of the book. This will allow statistics about authors and publishers, as well as possibility to further link the KG to external bibliographic LOD datasets. Another option would be to link Study programs and modules to their syllabus description at various University repositories or open data APIs, such as the one of the [Aristotle University of Thessaloniki](https://ws-ext.it.auth.gr/swagger/).
+
+
 
 Running EvdoGraph
 -----------------
