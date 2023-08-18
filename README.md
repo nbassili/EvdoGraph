@@ -12,9 +12,10 @@ for each module of the curricula (course), and finally, students that select one
 
 The EvdoGraph project extracts this information and converts it into an open Knowledge Graph in RDF that can be used to generate several 
 interesting reports and answer statistical analysis questions in SPARQL, included below. The KG is backed by a simple ontology which is aligned 
-with some well-known ontologies. The extraction / conversion application has been developed using SWI-Prolog's XPath and Semantic Web libraries. 
-The KG encompasses the Linked Open Data initiative by linking University entities with their corresponding DBpedia entries, 
-employing the Wikipedia search engine and the DBpedia SPARQL endpoint.
+with some well-known ontologies (VIVO, AIISO, TEACH, Bowlogna, Schema.org, DBpedia, Wikidata). The KG encompasses the Linked Open Data initiative
+by linking University entities with their corresponding DBpedia entries, employing the Wikipedia search engine and the DBpedia SPARQL endpoint.
+
+The extraction / conversion application has been developed using SWI-Prolog's XPath and Semantic Web libraries. 
 
 The possible uses for the KG are countless. Appart from the SPARQL queries shown below, the KG could be used for marketing purposes, i.e., publishers could have an instant clear picture of the University market in order to strategically decide for new books or promotion targets, or faculty researchers could analyse the Greek Higher Education landscape, i.e., analyse what kind of courses are taught at various disciplines, or compare study programs at different Universities / Departments.
 
