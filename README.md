@@ -21,6 +21,9 @@ The possible uses for the KG are countless. Appart from the SPARQL queries shown
 
 Ideas for future work could include the more fine-grained treatment of textbooks, as currently their title is actually the whole citation of the book. This will allow statistics about authors and publishers, as well as possibility to further link the KG to external bibliographic LOD datasets. Another option would be to link Study programs and modules to their syllabus description at various University repositories or open data APIs, such as the one of the [Aristotle University of Thessaloniki](https://ws-ext.it.auth.gr/swagger/).
 
+Publication
+-----------
+N. Bassiliades, [“EvdoGraph: A Knowledge Graph for the EVDOXUS Textbook Management Service for Greek Universities”](https://intelligence.csd.auth.gr/publication/conference-papers/evdograph-a-knowledge-graph-for-the-evdoxus-textbook-management-service-for-greek-universities/), accepted for presentation at, 15th International Conference on Knowledge Engineering and Ontology Development (KEOD 2023), 13-15 Nov 2023, Rome, Italy.   
 
 
 Running EvdoGraph
