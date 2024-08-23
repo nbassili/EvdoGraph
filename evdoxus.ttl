@@ -1,23 +1,21 @@
 # baseURI: https://w3id.org/evdoxus
 # prefix: evdx
 
-@prefix evdx: <https://w3id.org/evdoxus#> .
 @prefix aiiso: <http://purl.org/vocab/aiiso/schema#> .
 @prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix bow: <https://diuf.unifr.ch/xi/bowlogna/> .
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix evdx: <https://w3id.org/evdoxus#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
 @prefix teach: <http://linkedscience.org/teach/ns#> .
-@prefix vivo: <http://vivoweb.org/ontology/core#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix vCard: <http://www.w3.org/2006/vcard/ns#> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix bow: <https://diuf.unifr.ch/xi/bowlogna/> .
+@prefix vivo: <http://vivoweb.org/ontology/core#> .
 @prefix wikidata: <http://www.wikidata.org/entity/> .
-
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://w3id.org/evdoxus>
   rdf:type owl:Ontology ;
@@ -25,101 +23,162 @@
 .
 evdx:AcademicEntity
   rdf:type rdfs:Class ;
+  rdfs:label "Academic Entity" ;
   rdfs:subClassOf rdfs:Resource ;
 .
 evdx:Book
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:LearningEntity, teach:Material ;
-  owl:equivalentClass bibo:Book, schema:Book, dbo:Book, wikidata:Q571 ;
+  rdfs:label "Book" ;
+  rdfs:subClassOf teach:Material ;
+  rdfs:subClassOf evdx:LearningEntity ;
+  owl:equivalentClass dbo:Book ;
+  owl:equivalentClass bibo:Book ;
+  owl:equivalentClass wikidata:Q571 ;
+  owl:equivalentClass schema:Book ;
 .
 evdx:Course
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:LearningEntity, schema:EducationalOccupationalProgram, wikidata:Q207137 ;
-  owl:equivalentClass aiiso:Programme, teach:StudyProgram, bow:Study_Program ;
+  rdfs:label "Course" ;
+  rdfs:subClassOf wikidata:Q207137 ;
+  rdfs:subClassOf schema:EducationalOccupationalProgram ;
+  rdfs:subClassOf evdx:LearningEntity ;
+  owl:equivalentClass teach:StudyProgram ;
+  owl:equivalentClass aiiso:Programme ;
+  owl:equivalentClass bow:Study_Program ;
 .
 evdx:Department
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:AcademicEntity, schema:School ;
-  owl:equivalentClass vivo:AcademicDepartment, aiiso:Department, bow:Department, wikidata:Q2467461 ;
+  rdfs:label "Department" ;
+  rdfs:subClassOf schema:School ;
+  rdfs:subClassOf evdx:AcademicEntity ;
+  owl:equivalentClass aiiso:Department ;
+  owl:equivalentClass vivo:AcademicDepartment ;
+  owl:equivalentClass wikidata:Q2467461 ;
+  owl:equivalentClass bow:Department ;
 .
 evdx:LearningEntity
   rdf:type rdfs:Class ;
+  rdfs:label "Learning Entity" ;
   rdfs:subClassOf rdfs:Resource ;
 .
 evdx:Module
   rdf:type rdfs:Class ;
+  rdfs:label "Module" ;
   rdfs:subClassOf evdx:LearningEntity ;
-  owl:equivalentClass vivo:Course, aiiso:Course, teach:Course, schema:Course, bow:Module, wikidata:Q600134 ;
+  owl:equivalentClass teach:Course ;
+  owl:equivalentClass aiiso:Course ;
+  owl:equivalentClass vivo:Course ;
+  owl:equivalentClass wikidata:Q600134 ;
+  owl:equivalentClass bow:Module ;
+  owl:equivalentClass schema:Course ;
 .
 evdx:University
   rdf:type rdfs:Class ;
-  rdfs:subClassOf evdx:AcademicEntity, aiiso:Institution, schema:CollegeOrUniversity ;
-  owl:equivalentClass vivo:University, dbo:University, wikidata:Q3918 ;
+  rdfs:label "University" ;
+  rdfs:subClassOf aiiso:Institution ;
+  rdfs:subClassOf schema:CollegeOrUniversity ;
+  rdfs:subClassOf evdx:AcademicEntity ;
+  owl:equivalentClass dbo:University ;
+  owl:equivalentClass vivo:University ;
+  owl:equivalentClass wikidata:Q3918 ;
 .
 evdx:hasBook
   rdf:type rdf:Property ;
+  rdfs:comment "Module has Book" ;
   rdfs:domain evdx:Module ;
+  rdfs:label "has book" ;
   rdfs:range evdx:Book ;
   rdfs:subPropertyOf teach:reading ;
   owl:inverseOf wikidata:P366 ;
 .
 evdx:hasCode
   rdf:type rdf:Property ;
+  rdfs:comment "Book, Course or Module has Code" ;
   rdfs:domain evdx:LearningEntity ;
+  rdfs:label "has code" ;
   rdfs:range xsd:string ;
-  rdfs:subPropertyOf aiiso:code, wikidata:P3295 ;
+  rdfs:subPropertyOf aiiso:code ;
+  rdfs:subPropertyOf wikidata:P3295 ;
 .
 evdx:hasCourse
   rdf:type rdf:Property ;
+  rdfs:comment "Department has Course" ;
   rdfs:domain evdx:Department ;
+  rdfs:label "has course" ;
   rdfs:range evdx:Course ;
   rdfs:subPropertyOf aiiso:teaches ;
-  owl:inverseOf schema:provider, wikidata:P137 ;
+  owl:inverseOf wikidata:P137 ;
+  owl:inverseOf schema:provider ;
 .
 evdx:hasDepartment
   rdf:type rdf:Property ;
+  rdfs:comment "University has Department" ;
   rdfs:domain evdx:University ;
+  rdfs:label "has department" ;
   rdfs:range evdx:Department ;
-  rdfs:subPropertyOf aiiso:organization, schema:department, wikidata:P527 ;
+  rdfs:subPropertyOf aiiso:organization ;
+  rdfs:subPropertyOf wikidata:P527 ;
+  rdfs:subPropertyOf schema:department ;
 .
 evdx:hasModule
   rdf:type rdf:Property ;
+  rdfs:comment "Course has Module" ;
   rdfs:domain evdx:Course ;
+  rdfs:label "has module" ;
   rdfs:range evdx:Module ;
-  rdfs:subPropertyOf aiiso:knowledgeGrouping, wikidata:P527  ;
+  rdfs:subPropertyOf aiiso:knowledgeGrouping ;
+  rdfs:subPropertyOf wikidata:P527 ;
   owl:equivalentProperty schema:hasCourse ;
   owl:inverseOf teach:studyProgram ;
 .
 evdx:hasURL
   rdf:type rdf:Property ;
+  rdfs:comment "Book, Course, or Module has URL" ;
   rdfs:domain evdx:LearningEntity ;
+  rdfs:label "has URL" ;
   rdfs:range xsd:anyURI ;
   rdfs:subPropertyOf wikidata:P2699 ;
-  owl:equivalentProperty schema:url, vCard:hasURL ;
+  owl:equivalentProperty vCard:hasURL ;
+  owl:equivalentProperty schema:url ;
 .
 evdx:name
   rdf:type rdf:Property ;
+  rdfs:comment "University or Department name" ;
   rdfs:domain evdx:AcademicEntity ;
+  rdfs:label "name" ;
   rdfs:range xsd:string ;
+  rdfs:subPropertyOf wikidata:P2561 ;
+  rdfs:subPropertyOf foaf:name ;
+  rdfs:subPropertyOf bow:hasName ;
   owl:equivalentProperty vCard:hasOrganizationName ;
-  rdfs:subPropertyOf foaf:name, bow:hasName, wikidata:P2561 ;
 .
 evdx:semester
   rdf:type rdf:Property ;
+  rdfs:comment "Module semester" ;
   rdfs:domain evdx:Module ;
+  rdfs:label "semester" ;
   rdfs:range xsd:integer ;
   rdfs:subPropertyOf teach:academicTerm ;
 .
 evdx:title
   rdf:type rdf:Property ;
+  rdfs:comment "Book, Course, or Module title" ;
   rdfs:domain evdx:LearningEntity ;
+  rdfs:label "title" ;
   rdfs:range xsd:string ;
+  rdfs:subPropertyOf teach:hasTitle ;
+  rdfs:subPropertyOf wikidata:P1476 ;
+  rdfs:subPropertyOf bow:hasName ;
   owl:equivalentProperty vCard:title ;
-  rdfs:subPropertyOf teach:hasTitle, bow:hasName, wikidata:P1476 ;
 .
 evdx:year
   rdf:type rdf:Property ;
+  rdfs:comment "Course year" ;
   rdfs:domain evdx:Course ;
+  rdfs:label "year" ;
   rdfs:range xsd:integer ;
-  rdfs:subPropertyOf schema:startDate, dbo:startYear, bow:beginsToApplyOnDate, wikidata:P571 ;
+  rdfs:subPropertyOf dbo:startYear ;
+  rdfs:subPropertyOf wikidata:P571 ;
+  rdfs:subPropertyOf bow:beginsToApplyOnDate ;
+  rdfs:subPropertyOf schema:startDate ;
 .
