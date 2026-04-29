@@ -1,0 +1,398 @@
+# baseURI: https://w3id.org/evdoxus
+# prefix: evdx
+
+@prefix aiiso: <http://purl.org/vocab/aiiso/schema#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix bow: <https://diuf.unifr.ch/xi/bowlogna/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix evdx: <https://w3id.org/evdoxus#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix spin: <http://spinrdf.org/spin#> .
+@prefix teach: <http://linkedscience.org/teach/ns#> .
+@prefix vCard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix vivo: <http://vivoweb.org/ontology/core#> .
+@prefix wikidata: <http://www.wikidata.org/entity/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/evdoxus>
+  rdf:type owl:Ontology ;
+  spin:imports <http://topbraid.org/spin/owlrl-all> ;
+  owl:versionInfo "Created with TopBraid Composer" ;
+.
+evdx:AcademicEntity
+  rdf:type owl:Class ;
+  rdfs:label "Academic Entity" ;
+  rdfs:subClassOf evdx:EvdoxusEntity ;
+.
+evdx:Book
+  rdf:type owl:Class ;
+  rdfs:label "Book" ;
+  rdfs:subClassOf teach:Material ;
+  rdfs:subClassOf evdx:LearningEntity ;
+  owl:equivalentClass dbo:Book ;
+  owl:equivalentClass bibo:Book ;
+  owl:equivalentClass wikidata:Q571 ;
+  owl:equivalentClass schema:Book ;
+.
+evdx:Course
+  rdf:type owl:Class ;
+  rdfs:label "Course" ;
+  rdfs:subClassOf evdx:LearningEntity ;
+  owl:equivalentClass teach:Course ;
+  owl:equivalentClass aiiso:Course ;
+  owl:equivalentClass vivo:Course ;
+  owl:equivalentClass wikidata:Q600134 ;
+  owl:equivalentClass bow:Module ;
+  owl:equivalentClass schema:Course ;
+.
+evdx:Department
+  rdf:type owl:Class ;
+  rdfs:label "Department" ;
+  rdfs:subClassOf schema:School ;
+  rdfs:subClassOf evdx:AcademicEntity ;
+  owl:equivalentClass aiiso:Department ;
+  owl:equivalentClass vivo:AcademicDepartment ;
+  owl:equivalentClass wikidata:Q2467461 ;
+  owl:equivalentClass bow:Department ;
+.
+evdx:EvdoxusEntity
+  rdf:type owl:Class ;
+  rdfs:subClassOf owl:Thing ;
+.
+evdx:ID
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned with external ontologies" ;
+  rdfs:comment "The ID of the resource in the Evdoxus database" ;
+  rdfs:domain evdx:EvdoxusEntity ;
+  rdfs:range xsd:integer ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:LearningEntity
+  rdf:type owl:Class ;
+  rdfs:label "Learning Entity" ;
+  rdfs:subClassOf evdx:EvdoxusEntity ;
+.
+evdx:Publisher
+  rdf:type owl:Class ;
+  rdfs:subClassOf evdx:EvdoxusEntity ;
+.
+evdx:University
+  rdf:type owl:Class ;
+  rdfs:label "University" ;
+  rdfs:subClassOf aiiso:Institution ;
+  rdfs:subClassOf schema:CollegeOrUniversity ;
+  rdfs:subClassOf evdx:AcademicEntity ;
+  owl:equivalentClass dbo:University ;
+  owl:equivalentClass vivo:University ;
+  owl:equivalentClass wikidata:Q3918 ;
+.
+evdx:authors
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book authors" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "authors" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:backCover
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:comment "URL of the book's back cover image" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "back cover" ;
+  rdfs:range xsd:anyURI ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:belongsToUniversity
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Department belongs to University" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Department ;
+  rdfs:label "belongs to university" ;
+  rdfs:range evdx:University ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf evdx:hasDepartment ;
+.
+evdx:bookSize
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book size" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "book size" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:bookType
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book type: electronic or hard copy (published)" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "book type" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:contents
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:comment "URL to the book's table of contents PDF" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "contents" ;
+  rdfs:range xsd:anyURI ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:coverType
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book cover type: hard or soft" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "cover type" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:distributor
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book distributor - sometimes coincides with the publisher" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "distributor" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:edition
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book edition" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "edition" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:excerpt
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:comment "URL to the book's excerpt (PDF)" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "excerpt" ;
+  rdfs:range xsd:anyURI ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:frontCover
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:comment "URL of the book's front cover image" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "front cover" ;
+  rdfs:range xsd:anyURI ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:hasBook
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Course has Book" ;
+  rdfs:domain evdx:Course ;
+  rdfs:label "has book" ;
+  rdfs:range evdx:Book ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf wikidata:P366 ;
+  owl:inverseOf evdx:proposedForCourse ;
+.
+evdx:hasCode
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book or Course Code" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:LearningEntity ;
+  rdfs:label "has code" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:hasCourse
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Department has Course" ;
+  rdfs:domain evdx:Department ;
+  rdfs:label "has course" ;
+  rdfs:range evdx:Course ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf wikidata:P137 ;
+  owl:inverseOf schema:provider ;
+  owl:inverseOf evdx:isGivenByDepartment ;
+.
+evdx:hasDepartment
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:comment "University has Department" ;
+  rdfs:domain evdx:University ;
+  rdfs:label "has department" ;
+  rdfs:range evdx:Department ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf evdx:belongsToUniversity ;
+.
+evdx:hasPublisher
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Book has Publisher" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "has publisher" ;
+  rdfs:range evdx:Publisher ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf evdx:publishes ;
+.
+evdx:hasSchool
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:comment "School name where the Department belongs to" ;
+  rdfs:domain evdx:Department ;
+  rdfs:label "has school" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:hasURL
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book or Course URL" ;
+  rdfs:domain evdx:LearningEntity ;
+  rdfs:label "has URL" ;
+  rdfs:range xsd:anyURI ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+  owl:equivalentProperty vCard:hasURL ;
+  owl:equivalentProperty schema:url ;
+.
+evdx:isGivenByDepartment
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Course is given by Department" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Course ;
+  rdfs:label "is given by department" ;
+  rdfs:range evdx:Department ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf evdx:hasCourse ;
+.
+evdx:isbn
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book's ISBN" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "isbn" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:keyword
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book's keywords" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "keyword" ;
+  rdfs:range rdf:List ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:name
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "University or Department name" ;
+  rdfs:domain evdx:AcademicEntity ;
+  rdfs:label "name" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+  owl:equivalentProperty vCard:hasOrganizationName ;
+.
+evdx:pages
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book's number of pages" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "pages" ;
+  rdfs:range xsd:integer ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:professors
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned with external ontologies" ;
+  rdfs:comment "Professors that teach the Course" ;
+  rdfs:domain evdx:Course ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:proposedForCourse
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Book proposed for Course" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "proposed for course" ;
+  rdfs:range evdx:Course ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf evdx:hasBook ;
+.
+evdx:publicationYear
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book's publication year" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "publication year" ;
+  rdfs:range xsd:integer ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:publisherName
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:comment "Publisher's name" ;
+  rdfs:domain evdx:Publisher ;
+  rdfs:label "publisher name" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:publisherWebPage
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book's web page at the publisher's site" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Book ;
+  rdfs:label "publisher web page" ;
+  rdfs:range xsd:anyURI ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:publishes
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Publisher publishes Book" ;
+  rdfs:comment "needs to be aligned" ;
+  rdfs:domain evdx:Publisher ;
+  rdfs:label "publishes" ;
+  rdfs:range evdx:Book ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+  owl:inverseOf evdx:hasPublisher ;
+.
+evdx:secretaryID
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Needs to be aglined" ;
+  rdfs:comment "The ID of the secreariat of the Department. This is the ID that is used to link Departments to courses in the Evdoxus database." ;
+  rdfs:domain evdx:Department ;
+  rdfs:label "secretary ID" ;
+  rdfs:range xsd:integer ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:semester
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Course's semester" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Course ;
+  rdfs:label "semester" ;
+  rdfs:range xsd:integer ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
+evdx:title
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Book or Course title" ;
+  rdfs:domain evdx:LearningEntity ;
+  rdfs:label "title" ;
+  rdfs:range xsd:string ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+  owl:equivalentProperty vCard:title ;
+.
+evdx:year
+  rdf:type owl:DatatypeProperty ;
+  rdfs:comment "Course year" ;
+  rdfs:comment "Needs to be aligned" ;
+  rdfs:domain evdx:Course ;
+  rdfs:label "year" ;
+  rdfs:range xsd:integer ;
+  rdfs:subPropertyOf owl:topDataProperty ;
+.
