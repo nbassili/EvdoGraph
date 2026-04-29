@@ -19,8 +19,6 @@
 :- use_module(library(semweb/rdfs)).
 :- use_module(library(semweb/sparql_client)).
 
-%:- [cache_courses].
-
 
 :- rdf_register_prefix(dbo,'http://dbpedia.org/ontology/'),
    rdf_register_prefix(dbr,'http://dbpedia.org/resource/'),
@@ -32,17 +30,13 @@
 
 % Initialize cache when you run the program for the first time by running:
 %    :- init_cache.
-% Each new academic year, the cache should be updated with the new year coursesm by running:
+% Each new academic year, the cache should be updated with the new year courses by running:
 %    :- update_cache.
-% You can extract courses to RDF inside SWI-Prolog by running:
-%    :- extract_courses.
-% Time stats @ Univeristy PC:
-% 5,913,864,123 inferences, 230.375 CPU in 450.964 seconds (51% CPU, 25670598 Lips)
-% Afterwards, you run the following to save the triples (using correct filename).
-%    :- rdf_save_turtle('evdoxus-all-20230420.ttl',[]).
-% Saved 3,887,410 triples about 585,984 subjects into 'evdoxus-all-20230510.ttl' (27.984 sec)
-% in GraphDB you must CLEAR DEFAULT
-% Imported successfully in 10m 49s.. (GRAPHDB)
+% This incrementally caches the course pages of the new academic year. Sometimes, in the middle of an academic year, this refreshes the cache of the current academic year,
+% since during the year information about book per course is usually updated.
+% You can generate the complete RDF graph inside SWI-Prolog by running:
+%    :- generate_graph.
+
 
 generate_graph :-
 	(exists_file('evdoxus-universities.ttl') ->
@@ -64,7 +58,6 @@ generate_universities :-
 
 generate_universities([]).
 generate_universities([UnivID-UnivName|RestUniversities]) :-
-	%(UnivNo == 10 -> stop_here; true),
 	rdf_current_prefix(evdx,EvdxURI),
 	atomic_list_concat([EvdxURI,university_,UnivID],UnivURI),
 	rdf_assert(UnivURI, rdf:type, evdx:'University'),
@@ -77,14 +70,6 @@ generate_universities([UnivID-UnivName|RestUniversities]) :-
 	(ELDBPediaURL \= null -> rdf_assert(UnivURI, owl:sameAs, ELDBPediaURL); true),
 	generate_universities(RestUniversities).
 
-/*
-extract_courses_u :-
-	rdf_load('evdoxus-universities.ttl',[register_namespaces(true)]),
-	nl, write('Extracting Departments, Courses and Books...'), nl, nl,
-	extract_departments_courses(DC_List),
-	generate_departments_courses(DC_List),
-	rdf_save_turtle('evdoxus-all.ttl',[]).
-*/
 
 generate_departments :-
 	rdf_load('evdoxus-universities.ttl',[register_namespaces(true)]),
@@ -121,44 +106,6 @@ generate_books :-
 	generate_books(BookList).
 
 
-stop_here.
-
-/*
-extract_departments_courses(DC_List) :-
-	findall(UnivID-DeptName-DeptCode-SchoolName-DeptCourses,
-		(   university(UnivID,_UnivName),
-			department(_DeptID,DeptCode,DeptName,SchoolName,UnivID),
-		    extract_courses(DeptCode,DeptCourses)
-		),
-		DC_List).
-
-extract_courses(DeptCode,DeptCourses) :-
-	findall(CourseID-CourseCode-CourseTitle-Semester-Professors-Year-CourseBooks,
-		(   course(CourseID,CourseCode,CourseTitle,Semester,Professors,DeptCode,Year),
-			findall(BookID,course_book(BookID,CourseID),CourseBooks)
-		),
-		DeptCourses).
-*/
-
-/*
-%generate_departments_courses(DC_List).
-generate_departments_courses([]).
-generate_departments_courses([UnivID-DeptName-DeptCode-SchoolName-DeptCourses|RestDC_List]) :-
-	discover_univ_uri(UnivID,UnivURI),
-	rdf_current_prefix(evdx,EvdxURI),
-	atomic_list_concat([EvdxURI,dept_,DeptCode],DeptURI),
-	rdf_assert(UnivURI, evdx:hasDepartment, DeptURI),   
-	rdf_assert(DeptURI, evdx:belongsToUniversity, UnivURI),
-	rdf_assert(DeptURI, rdf:type, evdx:'Department'),
-	rdf_assert(DeptURI, evdx:name, DeptName^^xsd:string),
-	rdf_assert(DeptURI, evdx:'ID', DeptCode^^xsd:integer), 
-	write("Department: "), writeln(DeptCode-DeptName),
-	my_rdf_assert(DeptURI, evdx:hasSchool, SchoolName^^xsd:string),
-	generate_courses(DeptURI,DeptCode,DeptCourses),
-	generate_departments_courses(RestDC_List).
-*/
-
-%generate_courses(DeptURI,DeptCode,DeptCourses),
 generate_courses([]).
 generate_courses([CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptCode|RestCourses]) :-
 	rdf_current_prefix(evdx,EvdxURI),
@@ -178,7 +125,6 @@ generate_courses([CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptC
 	write("Course: "), writeln(CourseID-CourseTitle),
 	generate_courses(RestCourses).
 
-%generate_books(CourseURI,CourseBooks),
 generate_books([]).
 generate_books([[BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL]|RestBooks]) :-
 	rdf_current_prefix(evdx,EvdxURI),
@@ -233,46 +179,13 @@ link_books_to_courses([BookID-CourseID|RestCourseBooks]) :-
 	rdf_assert(BookURI,evdx:proposedForCourse,CourseURI),
 	link_books_to_courses(RestCourseBooks).
 
-%	rdf_assert(CourseURI, evdx:hasBook, BookURI),
-
-/*
-find_or_create_book(BookID,BookURI) :-
-	rdf(BookURI,evdx:'ID',BookID^^xsd:integer), 
-	rdf(BookURI,rdf:type,evdx:'Book'), !.
-find_or_create_book(BookID,BookURI) :-
-	% book(94700120,"Published","ΤΕΧΝΗΤΗ ΝΟΗΜΟΣΥΝΗ - 4η ΕΚΔΟΣΗ","ΒΛΑΧΑΒΑΣ Ι./ΚΕΦΑΛΑΣ Π. / ΒΑΣΙΛΕΙΑΔΗΣ Ν. / ΚΟΚΚΟΡΑΣ Φ./ ΣΑΚΕΛΛΑΡΙΟΥ Η.","9786185196448","4","ΕΤΑΙΡΕΙΑ ΑΞΙΟΠΟΙΗΣΗΣ ΚΑΙ ΔΙΑΧΕΙΡΙΣΗΣ ΠΕΡΙΟΥΣΙΑΣ ΠΑΝΕΠΙΣΤΗΜΙΟΥ ΜΑΚΕΔΟΝΙΑΣ","1441","ΕΤΑΙΡΙΑ ΑΞΙΟΠΟΙΗΣΗΣ ΚΑΙ ΔΙΑΧΕΙΡΙΣΗΣ ΠΕΡΙΟΥΣΙΑΣ ΤΟΥ ΠΑΝΕΠΙΣΤΗΜΙΟΥ ΜΑΚΕΔΟΝΙΑΣ ΟΙΚΟΝΟΜΙΚΩΝ ΚΑΙ ΚΟΙΝΩΝΙΚΩΝ ΕΠΙΣΤΗΜΩΝ",2020,["εφαρμογες στην πληροφορική","εφαρμογες υπολογιστων","πληροφοριακά συστήματα","πληροφορικά συστήματα","πληροφορικη","τεχνητη νοημοσυνη","υπολογιστές","υπολογιστική νοημοσύνη"],1000,"Soft","[17 x 24]","https://static.eudoxus.gr/books/20/cover-94700120.jpg","https://static.eudoxus.gr/books/20/backcover-94700120.jpg","https://static.eudoxus.gr/books/20/toc-94700120.pdf","https://static.eudoxus.gr/books/20/chapter-94700120.pdf","https://static.eudoxus.gr/books/http://www.uompress.gr ","https://service.eudoxus.gr/coursebooks/rest/courses-books/book/eudoxus/info?bookId=94700120").
-	book(BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL),
-	rdf_current_prefix(evdx,EvdxURI),
-	atomic_list_concat([EvdxURI,book_,BookID],BookURI),
-	rdf_assert(BookURI, rdf:type, evdx:'Book'),
-	rdf_assert(BookURI, evdx:'ID', BookID^^xsd:integer),
-	my_rdf_assert(BookURI, evdx:authors, Authors^^xsd:string),
-	my_rdf_assert(BookURI, evdx:backCover, Backcover^^xsd:anyURI),
-	my_rdf_assert(BookURI, evdx:bookSize, BookSize^^xsd:string),
-	my_rdf_assert(BookURI, evdx:bookType, BookType^^xsd:string),
-	my_rdf_assert(BookURI, evdx:contents, Contents^^xsd:anyURI),
-	my_rdf_assert(BookURI, evdx:coverType, CoverType^^xsd:string),
-	my_rdf_assert(BookURI, evdx:distributor, Distributor^^xsd:string),
-	my_rdf_assert(BookURI, evdx:edition, Edition^^xsd:string),
-	my_rdf_assert(BookURI, evdx:excerpt, Excerpt^^xsd:anyURI),
-	my_rdf_assert(BookURI, evdx:frontCover, FrontCover^^xsd:anyURI),
-	my_rdf_assert(BookURI, evdx:isbn, ISBN^^xsd:string),
-	my_rdf_assert(BookURI, evdx:pages, Pages^^xsd:integer),
-	my_rdf_assert(BookURI, evdx:publicationYear, Year^^xsd:integer),
-	my_rdf_assert(BookURI, evdx:publisherWebPage, PublisherWebPage^^xsd:anyURI),
-	my_rdf_assert(BookURI, evdx:publisher, Publisher^^xsd:string),
-	my_rdf_assert(BookURI, evdx:publisherID, PublisherID^^xsd:string),
-	multi_rdf_assert(BookURI, evdx:keyword, Keywords,xsd:string),
-	my_rdf_assert(BookURI, evdx:title, Title^^xsd:string),
-	rdf_assert(BookURI, evdx:hasCode, BookID^^xsd:integer),
-	my_rdf_assert(BookURI, evdx:hasURL, BookURL^^xsd:anyURI), !.
-*/
 
 %multi_rdf_assert(Subject,Predicate,ListofObjects)
 multi_rdf_assert(_,_Predicate,[],_).
 multi_rdf_assert(Subject,Predicate,[Object|RestofObjects],Datatype) :-
 	my_rdf_assert(Subject,Predicate,Object^^Datatype),
 	multi_rdf_assert(Subject,Predicate,RestofObjects,Datatype).
+
 
 % Do not store empty strings or zero values
 my_rdf_assert(Subject, Predicate, Data^^xsd:integer) :- !,
@@ -348,18 +261,6 @@ find_alternative_names(ENDBPediaURL,AltNames) :-
 	run_sparql_query('dbpedia.org',Sparql_Query,Results),
 	findall(Str,member(row(literal(Str)),Results),AltNames).
 
-/*
-select distinct str(?l)
-where {
-{<http://dbpedia.org/resource/Panteion_University> rdfs:label ?l .}
-UNION
-{<http://dbpedia.org/resource/Panteion_University> foaf:name ?l .}
-union
-{ <http://dbpedia.org/resource/Panteion_University> dbp:nativeName ?l }
-}
-
-select distinct str(?l) where { <http://dbpedia.org/resource/Panteion_University> (rdfs:label|foaf:name|dbp:nativeName) ?l .}
-*/
 
 wikipedia_to_dbpedia_url(el,WikiURL,DBPediaURL) :- !,
 	sub_atom(WikiURL,0,B,C,'http://el.wikipedia.org/wiki/'),
@@ -435,59 +336,3 @@ score_names(UnivName,[UnivAltName|RestAltNames],[Score|RestScores]) :-
 	downcase_atom(UnivAltName1,UnivAltName2),
 	isub(UnivName2,UnivAltName2,Score,[zero_to_one(true)]),
 	score_names(UnivName,RestAltNames,RestScores).
-
-
-/* Checks 
-
-find_null_values_book_args(List) :-
-	setof(ArgName,find_empty_book_arg(ArgName),List).
-	
-find_empty_book_arg(ArgName) :-
-	BookFact = book(BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL),
-	ArgsNames = ["BookID","BookType","Title","Authors","ISBN","Edition","Distributor","PublisherID","Publisher","Year","Keywords","Pages","CoverType","BookSize","FrontCover","Backcover","Contents","Excerpt","PublisherWebPage","BookURL"],
-	call(BookFact),
-	BookFact =.. [book|BookArgs],
-	nth1(1,BookArgs,BookID),
-	nth1(N,BookArgs,""),
-	nth1(N,ArgsNames,ArgName),
-	write("Book with ID: "), write(BookID), write(" has empty string in argument: "), write(ArgName), nl.
-
-find_zero_values_book_args(List) :-
-	setof(ArgName,find_zero_book_int(ArgName),List).	
-
-find_zero_book_int(ArgName) :-
-	BookFact = book(BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL),
-	ArgsNames = ["BookID","BookType","Title","Authors","ISBN","Edition","Distributor","PublisherID","Publisher","Year","Keywords","Pages","CoverType","BookSize","FrontCover","Backcover","Contents","Excerpt","PublisherWebPage","BookURL"],
-	call(BookFact),
-	BookFact =.. [book|BookArgs],
-	nth1(1,BookArgs,BookID),
-	nth1(N,BookArgs,0),
-	nth1(N,ArgsNames,ArgName),
-	write("Book with ID: "), write(BookID), write(" has zero value in argument: "), write(ArgName), nl.
-
-find_null_values_course_args(List) :-
-	setof(ArgName,find_empty_course_arg(ArgName),List).
-	
-find_empty_course_arg(ArgName) :-
-	CourseFact = course(CourseID,CourseCode,CourseTitle,Semester,Professors,DeptCode,Year),
-	ArgsNames = ["CourseID","CourseCode","CourseTitle","Semester","Professors","DeptCode","Year"],
-	call(CourseFact),
-	CourseFact =.. [course|CourseArgs],
-	nth1(1,CourseArgs,CourseID),
-	nth1(N,CourseArgs,""),
-	nth1(N,ArgsNames,ArgName),
-	write("Course with ID: "), write(CourseID), write(" has empty string in argument: "), write(ArgName), nl.
-
-find_zero_values_course_args(List) :-
-	setof(ArgName,find_zero_course_int(ArgName),List).	
-
-find_zero_course_int(ArgName) :-
-	CourseFact = course(CourseID,CourseCode,CourseTitle,Semester,Professors,DeptCode,Year),
-	ArgsNames = ["CourseID","CourseCode","CourseTitle","Semester","Professors","DeptCode","Year"],
-	call(CourseFact),
-	CourseFact =.. [course|CourseArgs],
-	nth1(1,CourseArgs,CourseID),
-	nth1(N,CourseArgs,0),
-	nth1(N,ArgsNames,ArgName),
-	write("Course with ID: "), write(CourseID), write(" has empty string in argument: "), write(ArgName), nl.
-	*/
