@@ -1,4 +1,4 @@
-# baseURI: file:///Evdoxus2/evdoxus-universities.rdf
+# baseURI: https://w3id.org/evdoxus
 
 @prefix aiiso: <http://purl.org/vocab/aiiso/schema#> .
 @prefix bibo: <http://purl.org/ontology/bibo/> .
