@@ -36,7 +36,7 @@ update_cache:-
     tell('./cache/updated_years.pl'),
     write(updated_years(UpdatedYears)), write('.\n'),
     told,
-    atomic_list_concat(['no-books-', ActiveYear,',txt'], NoBooksFile),
+    atomic_list_concat(['no-books-', ActiveYear,'.txt'], NoBooksFile),
     check_no_books(NoBooksFile), !.
 
 
@@ -107,7 +107,7 @@ update_cache_books(ActiveYear, UpdatedCourses):-
     ensure_loaded('./cache/books.pl'),
     ensure_loaded('./cache/books_per_course.pl'),
     retract_books_for_courses(UpdatedCourses),
-    atomic_list_concat(['no-books-', ActiveYear,',txt'], NoBooksFile),
+    atomic_list_concat(['no-books-', ActiveYear,'.txt'], NoBooksFile),
     open(NoBooksFile, write, Stream),
     update_cache_books_per_course(UpdatedCourses,Stream,1),
     close(Stream),
