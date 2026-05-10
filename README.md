@@ -23,12 +23,7 @@ i.e., publishers could have an instant clear picture of the University market in
 or faculty researchers could analyse the Greek Higher Education landscape, i.e., analyse what kind of courses are taught at various disciplines, 
 or compare study programs at different Universities / Departments.
 
-Ideas for future work could include the more fine-grained treatment of various information of textbooks. For example, currently all authors are contained
-in a single string. The same is tru about the professors that teach a course. So, separating reliably this information into lists of persons would
-statistics about authors and professors. Furthermore, based on the ISBN and/or other book information there is a possibility to further link the KG to 
-external bibliographic LOD datasets. 
-Finally, another option would be to link courses to their syllabus description at various University repositories or open data APIs, 
-such as the one of the [Aristotle University of Thessaloniki](https://ws-ext.it.auth.gr/swagger/).
+Ideas for future work could include the more fine-grained treatment of various information of textbooks. For example, currently all authors are contained in a single string. The same is true about the professors that teach a course. So, separating reliably this information into lists of persons would statistics about authors and professors. Furthermore, based on the ISBN and/or other book information there is a possibility to further link the KG to external bibliographic LOD datasets. Finally, another option would be to link courses to their syllabus description at various University repositories or open data APIs, such as the one of the [Aristotle University of Thessaloniki](https://ws-ext.it.auth.gr/swagger/).
 
 Publication
 -----------
@@ -77,7 +72,17 @@ into the Evdoxus Knowledge Graph (in RDF), you should run:
 	The KG is saved in the local file 'evdoxus-all.ttl', in Turtle format.
 	After this, the .ttl file can be uploaded in a Triplestore, such as GraphDB, or Virtuoso.
 
-You could use the following installation: http://lod.csd.auth.gr:7200/sparql
+1. When you want to update the RDF Evdoxus Graph from the updated cached information, you should run:
+
+
+		?- update_graph.
+
+	The KG is saved in the local file 'evdoxus-all-new.ttl', in Turtle format.
+	After this, the .ttl file can be uploaded in a Triplestore, such as GraphDB, or Virtuoso.
+	Since some of the triples in the old KG may not be present in the new graph, it is advised to recreate the KG at the triplestore;
+	not to just incrementally load it.
+
+You could use the following GraphDB installation: http://lod.csd.auth.gr:7200/sparql
 	
 You should select the "EvdoGraph" repository (pull-down menu at upper-right corner).
 

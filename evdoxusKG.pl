@@ -19,11 +19,13 @@
 :- use_module(library(semweb/rdfs)).
 :- use_module(library(semweb/sparql_client)).
 
+:- dynamic updated_years/1, updated_fact/3.
 
 :- rdf_register_prefix(dbo,'http://dbpedia.org/ontology/'),
    rdf_register_prefix(dbr,'http://dbpedia.org/resource/'),
    rdf_register_prefix('dbpedia-el','http://el.dbpedia.org/resource/').
 
+% This contains the Evdoxus ontology in OWL2 RL
 :- rdf_load('evdoxus.ttl',[register_namespaces(true)]).
 
 :- set_prolog_flag(stack_limit, 8_589_934_592).
@@ -36,6 +38,10 @@
 % since during the year information about book per course is usually updated.
 % You can generate the complete RDF graph inside SWI-Prolog by running:
 %    :- generate_graph.
+% The graph is saved in the file evdoxus-all.ttl. 
+% You can update the graph - after updating the cache - by running:
+%    :- update_graph.
+% This will create a new file evdoxus-all-new.ttl with the updated graph. You can replace the old graph with the new one by renaming the file to evdoxus-all.ttl.
 
 
 generate_graph :-
@@ -49,7 +55,18 @@ generate_graph :-
 	link_books_to_courses,
 	rdf_save_turtle('evdoxus-all.ttl',[]).
 
-
+update_graph :-
+	(exists_file('evdoxus-all.ttl') ->
+		rdf_load('evdoxus-all.ttl',[register_namespaces(true)]);
+		(writeln('Put the file evdoxus-all.ttl of the previous Evdoxus graph in the same directory as the current Prolog file and re-run update_graph!'); fail)
+	),
+	ensure_loaded('./cache/updated_years.pl'),
+	ensure_loaded('./cache/updated_facts.pl'),
+	updated_years(UpdatedYears),
+	update_courses(UpdatedYears,UpdatedCourses),
+	update_books(UpdatedCourses),
+	rdf_save_turtle('evdoxus-all-new.ttl',[]).
+	
 generate_universities :-
 	write('Generating and linking Universities...'), nl, nl,
 	findall(UnivID-UnivName,university(UnivID,UnivName),UnivList),
@@ -98,6 +115,15 @@ generate_courses :-
 			CourseList),
 	generate_courses(CourseList).
 
+update_courses(UpdatedYears,UpdatedCourses) :-
+	nl, write('Updating Courses...'), nl, nl,
+	findall(CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptCode,
+			(member(Year,UpdatedYears),
+			 course(CourseID,CourseCode,CourseTitle,Semester,Professors,DeptCode,Year)
+			),
+			CourseList),
+	update_courses_graph(CourseList,UpdatedCourses).
+
 generate_books :-
 	nl, write('Generating Books...'), nl, nl,
 	findall([BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL],
@@ -105,9 +131,25 @@ generate_books :-
 			BookList),
 	generate_books(BookList).
 
+update_books([]).
+update_books([UpdatedCourse|RestUpdatedCourses]) :-
+	findall([BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL],
+			(course_book(BookID,UpdatedCourse),
+			 book(BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL)
+			),
+			UpdatedBookList
+	),
+	retract_course_book_links(UpdatedCourse,UpdatedBookList),
+	update_books_graph(UpdatedCourse,UpdatedBookList),
+	update_books(RestUpdatedCourses).
+
 
 generate_courses([]).
 generate_courses([CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptCode|RestCourses]) :-
+	generate_one_course(CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptCode),
+	generate_courses(RestCourses).
+
+generate_one_course(CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptCode) :-
 	rdf_current_prefix(evdx,EvdxURI),
 	atomic_list_concat([EvdxURI,course_,CourseID],CourseURI),
 	discover_dept_uri(DeptCode,DeptURI),
@@ -122,11 +164,59 @@ generate_courses([CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptC
 	my_rdf_assert(CourseURI, evdx:professors, Professors^^xsd:string),
 	atomic_list_concat(['https://service.eudoxus.gr/coursebooks/rest/courses-books/course/',CourseID,'/books'],CourseURL),
 	rdf_assert(CourseURI, evdx:hasURL, CourseURL^^xsd:anyURI),
-	write("Course: "), writeln(CourseID-CourseTitle),
-	generate_courses(RestCourses).
+	write("Course: "), writeln(CourseID-CourseTitle).
+
+
+update_courses_graph([],[]).
+update_courses_graph([CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptCode|RestCourses],[CourseID|RestUpdatedCourses]) :-
+	(discover_course_uri(CourseID,_CourseURI) ->
+		true;
+		generate_one_course(CourseID-CourseCode-CourseTitle-Semester-Professors-Year-DeptCode)
+	),
+	update_courses_graph(RestCourses,RestUpdatedCourses).
 
 generate_books([]).
 generate_books([[BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL]|RestBooks]) :-
+	generate_one_book(BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL),
+	generate_books(RestBooks).
+
+retract_course_book_links(UpdatedCourse,UpdatedBookList) :-
+	discover_course_uri(UpdatedCourse,CourseURI),
+	rdf(CourseURI, evdx:hasBook, BookURI),
+	rdf(BookURI, evdx:'ID', BookID^^xsd:integer),
+	not(member([BookID|_],UpdatedBookList)),
+	rdf_retractall(CourseURI, evdx:hasBook, BookURI),
+	rdf_retractall(BookURI,evdx:proposedForCourse,CourseURI),
+	fail.
+retract_course_book_links(_UpdatedCourse,_UpdatedBookList).
+
+
+update_books_graph(_,[]).
+update_books_graph(UpdatedCourseID,[[BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL]|RestBooks]) :-
+	(discover_book_uri(BookID,BookURI) ->
+		(updated_fact(book,BookID,BookFact) -> 
+			(BookFact =.. [book|BookArgs],
+			 rdf_retractall(BookURI, _, _),
+			 Call =.. [generate_one_book|BookArgs],
+			 call(Call),
+			 retract(updated_fact(book,BookID,BookFact))
+			);
+			true
+		);
+		(generate_one_book(BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL))
+	),
+	discover_course_uri(UpdatedCourseID,CourseURI),
+	(var(BookURI) -> discover_book_uri(BookID,BookURI); true),
+	(rdf(CourseURI, evdx:hasBook, BookURI) ->
+		true;
+		(
+			rdf_assert(CourseURI, evdx:hasBook, BookURI),
+			rdf_assert(BookURI,evdx:proposedForCourse,CourseURI)
+		)
+	),
+	update_books_graph(UpdatedCourseID,RestBooks).
+
+generate_one_book(BookID,BookType,Title,Authors,ISBN,Edition,Distributor,PublisherID,Publisher,Year,Keywords,Pages,CoverType,BookSize,FrontCover,Backcover,Contents,Excerpt,PublisherWebPage,BookURL) :-
 	rdf_current_prefix(evdx,EvdxURI),
 	atomic_list_concat([EvdxURI,book_,BookID],BookURI),
 	rdf_assert(BookURI, rdf:type, evdx:'Book'),
@@ -153,8 +243,7 @@ generate_books([[BookID,BookType,Title,Authors,ISBN,Edition,Distributor,Publishe
 	my_rdf_assert(BookURI, evdx:title, Title^^xsd:string),
 	rdf_assert(BookURI, evdx:hasCode, BookID^^xsd:integer),
 	my_rdf_assert(BookURI, evdx:hasURL, BookURL^^xsd:anyURI), !,
-	write("Book: "), writeln(BookID-Title), 
-	generate_books(RestBooks).
+	write("Book: "), writeln(BookID-Title).
 
 find_or_create_publisher(PublisherID,_Publisher,PublisherURI) :-
 	rdf(PublisherURI,evdx:'ID',PublisherID^^xsd:integer), 
@@ -179,13 +268,11 @@ link_books_to_courses([BookID-CourseID|RestCourseBooks]) :-
 	rdf_assert(BookURI,evdx:proposedForCourse,CourseURI),
 	link_books_to_courses(RestCourseBooks).
 
-
 %multi_rdf_assert(Subject,Predicate,ListofObjects)
 multi_rdf_assert(_,_Predicate,[],_).
 multi_rdf_assert(Subject,Predicate,[Object|RestofObjects],Datatype) :-
 	my_rdf_assert(Subject,Predicate,Object^^Datatype),
 	multi_rdf_assert(Subject,Predicate,RestofObjects,Datatype).
-
 
 % Do not store empty strings or zero values
 my_rdf_assert(Subject, Predicate, Data^^xsd:integer) :- !,
@@ -220,8 +307,9 @@ discover_book_uri(BookID,BookURI) :-
 	rdf(BookURI, evdx:'ID', BookID^^xsd:integer), 
 	rdf(BookURI,rdf:type,evdx:'Book'), !.
 
-
+/* Currently the DBPedia links for ΑΣΠΑΙΤΕ cannot be found - TODO
 test1(A,B) :- search_university("ΑΣΠΑΙΤΕ",A,B).
+*/
 
 % //li[contains(@class,'interlanguage-link')]/a[@hreflang='en']/@href
 search_university(UnivName,GRDBPediaURL,GBDBPediaURL) :-

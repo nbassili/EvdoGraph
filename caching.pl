@@ -29,8 +29,13 @@ update_cache:-
         UpdatedYears=[ActiveYear];
         (UpdatedYears=[PrevActiveYear,ActiveYear], retractall(year(_)), retractall(active_year(_)), cache_years)
     ),
+    (exists_file('./cache/updated_years.pl') -> delete_file('./cache/updated_years.pl'); true),
+    (exists_file('./cache/updated_facts.pl') -> delete_file('./cache/updated_facts.pl'); true),
     update_cache_courses(UpdatedYears,UpdatedCourses),
     update_cache_books(ActiveYear,UpdatedCourses),
+    tell('./cache/updated_years.pl'),
+    write(updated_years(UpdatedYears)), write('.\n'),
+    told,
     atomic_list_concat(['no-books-', ActiveYear,',txt'], NoBooksFile),
     check_no_books(NoBooksFile), !.
 
@@ -78,13 +83,14 @@ cache_courses:-
     cache_courses_per_department(Departments, Years),
     save_facts(course/7, './cache/courses.pl').
 
-update_cache_courses([Year1],RetractedCourses):-
+update_cache_courses([Year1],UpdatedCourses):-
     ensure_loaded('./cache/departments.pl'),
     ensure_loaded('./cache/universities.pl'),
     ensure_loaded('./cache/courses.pl'),
     findall(DepartmentID, department(_,DepartmentID,_,_,_), Departments),
-    retract_courses_for_years([Year1],RetractedCourses),
+    retract_courses_for_years([Year1],_RetractedCourses),
     cache_courses_per_department(Departments, [Year1]),
+    findall(CourseID, course(CourseID,_,_,_,_,_,Year1), UpdatedCourses),
     save_facts(course/7, './cache/courses.pl').
 update_cache_courses([Year1,Year2],UpdatedCourses):-
     ensure_loaded('./cache/departments.pl'),
@@ -103,7 +109,7 @@ update_cache_books(ActiveYear, UpdatedCourses):-
     retract_books_for_courses(UpdatedCourses),
     atomic_list_concat(['no-books-', ActiveYear,',txt'], NoBooksFile),
     open(NoBooksFile, write, Stream),
-    cache_books_per_course(UpdatedCourses,Stream,1),
+    update_cache_books_per_course(UpdatedCourses,Stream,1),
     close(Stream),
     save_facts(book/20, './cache/books.pl'),
     save_facts(course_book/2, './cache/books_per_course.pl').
@@ -146,7 +152,7 @@ cache_books:-
     save_facts(course_book/2, './cache/books_per_course.pl').
 
 
-% Auxiliari predicate that is used when the courses.pl file is split
+% Auxiliary predicate that is used when the courses.pl file is split
 % into multiple files (because it takes too much time to run it at once
 % for all courses!)
 %
@@ -176,6 +182,42 @@ cache_books_per_course([CourseID|RestCourses], Stream, Count) :-
     Count1 is Count + 1,
     cache_books_per_course(RestCourses, Stream, Count1).
 
+update_cache_books_per_course([], _, _).
+update_cache_books_per_course([CourseID|RestCourses], Stream, Count) :-
+    write(Count), write(": "),
+    write("Fetching books for course "), write(CourseID), write(": "),
+    get_books_of_course(CourseID, Books),
+    (Books == [] -> (write(Stream,CourseID), nl(Stream)); true),
+    update_facts(book, Books, []),
+    findall(BookID, (member(Book, Books), dashes_to_list(Book,[BookID|_]), write(BookID), write(" ")), BookIDs),
+    nl,
+    assert_facts(course_book, BookIDs, [CourseID]),
+    Count1 is Count + 1,
+    update_cache_books_per_course(RestCourses, Stream, Count1).
+
+update_facts(_, [], _).
+update_facts(Predicate, [Head|Rest], ExtraArgs) :-
+    dashes_to_list(Head, Args),
+    append(Args, ExtraArgs, AllArgs),
+    Fact=..[Predicate|AllArgs],
+    updateif(Fact),
+    update_facts( Predicate, Rest, ExtraArgs).
+
+updateif(Fact) :-
+    Fact, !.
+updateif(Fact) :-
+    functor(Fact,Predicate,Arity),
+    functor(Fact1,Predicate,Arity),
+    arg(1,Fact,ID),
+    arg(1,Fact1,ID),
+    Fact1, !,
+    retract(Fact1),
+    assert(Fact),
+    append('./cache/updated_facts.pl'),
+    writeq(updated_fact(Predicate,ID,Fact)), write('.'), nl,
+    told.
+updateif(Fact) :-
+    assert(Fact).
 
 assert_facts(_, [], _).
 assert_facts(Predicate, [Head|Rest], ExtraArgs) :-
@@ -332,7 +374,8 @@ get_books_of_course(CourseID, Books) :-
 path_to_URL(null, "") :- !.
 path_to_URL("", "") :- !.
 path_to_URL(URL, URL) :-
-    string_concat("https://", _, URL), !.
+    downcase_atom(URL,URL1),
+    string_concat("https://", _, URL1), !.
 path_to_URL(Path, URL) :-
     string_concat("https://static.eudoxus.gr/books/", Path, URL).
 
